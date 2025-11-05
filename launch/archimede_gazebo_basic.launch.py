@@ -39,6 +39,7 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('use_rviz', default_value='false'),
         DeclareLaunchArgument('include_plugins', default_value='true'),
+        DeclareLaunchArgument('start_gazebo', default_value='true', description='Start Gazebo simulator'),
         DeclareLaunchArgument('pos_x', default_value='0.0'),
         DeclareLaunchArgument('pos_y', default_value='0.0'),
         DeclareLaunchArgument('pos_z', default_value='0.17'),
@@ -94,10 +95,15 @@ def generate_launch_description():
     #     output='screen'
     # )
 
-    # Gazebo - empty world
-    gz_sim = ExecuteProcess(
-        cmd=['gz', 'sim', 'empty.sdf', '-r'],
-        output='screen'
+    # Gazebo - empty world (conditional)
+    gz_sim = GroupAction(
+        condition=IfCondition(LaunchConfiguration('start_gazebo')),
+        actions=[
+            ExecuteProcess(
+                cmd=['gz', 'sim', 'empty.sdf', '-r'],
+                output='screen'
+            )
+        ]
     )
 
     # Spawn entity

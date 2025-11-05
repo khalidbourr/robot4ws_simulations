@@ -12,6 +12,7 @@ def generate_launch_description():
     
     # Declare arguments
     args = [
+        DeclareLaunchArgument('start_gazebo', default_value='true', description='Start Gazebo simulator'),
         DeclareLaunchArgument('use_joystick', default_value='false'),
         DeclareLaunchArgument('use_keyboard', default_value='true'),
         DeclareLaunchArgument('include_terrain_slip_plugin', default_value='false'),
@@ -30,6 +31,7 @@ def generate_launch_description():
             PathJoinSubstitution([pkg_sim, 'launch', 'archimede_gazebo_simulation_with_kinematics.launch.py'])
         ]),
         launch_arguments={
+            'start_gazebo': LaunchConfiguration('start_gazebo'),
             'include_terrain_slip_plugin': LaunchConfiguration('include_terrain_slip_plugin'),
             'neural_network_model': LaunchConfiguration('neural_network_model'),
             'include_wheels_terramechanic_model': LaunchConfiguration('include_wheels_terramechanic_model'),
