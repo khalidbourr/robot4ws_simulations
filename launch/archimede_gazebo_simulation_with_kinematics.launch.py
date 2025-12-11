@@ -22,6 +22,7 @@ def generate_launch_description():
         DeclareLaunchArgument('rocker_differential', default_value='false'),
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
+        DeclareLaunchArgument('load_sensors_plugins', default_value='true'),
     ]
 
     # Include basic gazebo launch
@@ -31,11 +32,13 @@ def generate_launch_description():
         ]),
         launch_arguments={
         'start_gazebo': LaunchConfiguration('start_gazebo'),
+        'world_name': LaunchConfiguration('world_name'),
         'include_plugins': LaunchConfiguration('include_plugins'),
         'include_terrain_slip_plugin': LaunchConfiguration('include_terrain_slip_plugin'),
         'rocker_differential': LaunchConfiguration('rocker_differential'),
         'add_velodyneHDL32E': LaunchConfiguration('add_velodyneHDL32E'),
         'lidar_organize_cloud': LaunchConfiguration('lidar_organize_cloud'),
+        'load_sensors_plugins': LaunchConfiguration('load_sensors_plugins')
         }.items()
     )
 

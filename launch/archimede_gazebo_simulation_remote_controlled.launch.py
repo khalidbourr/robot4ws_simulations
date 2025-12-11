@@ -23,6 +23,7 @@ def generate_launch_description():
         DeclareLaunchArgument('p310_env', default_value=os.environ.get('PYTHON_VENV', os.path.join(os.path.expanduser('~'), 'p310Venv/bin/python3.10'))),
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
+        DeclareLaunchArgument('load_sensors_plugins', default_value='true'),
     ]
 
     # Include main gazebo simulation
@@ -32,13 +33,14 @@ def generate_launch_description():
         ]),
         launch_arguments={
             'start_gazebo': LaunchConfiguration('start_gazebo'),
+            'world_name': LaunchConfiguration('world_name'),
             'include_terrain_slip_plugin': LaunchConfiguration('include_terrain_slip_plugin'),
             'neural_network_model': LaunchConfiguration('neural_network_model'),
             'include_wheels_terramechanic_model': LaunchConfiguration('include_wheels_terramechanic_model'),
             'rocker_differential': LaunchConfiguration('rocker_differential'),
-            'world_name': LaunchConfiguration('world_name'),
             'add_velodyneHDL32E': LaunchConfiguration('add_velodyneHDL32E'),
             'lidar_organize_cloud': LaunchConfiguration('lidar_organize_cloud'),
+            'load_sensors_plugins': LaunchConfiguration('load_sensors_plugins')
         }.items()
     )
 

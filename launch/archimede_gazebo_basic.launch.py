@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, GroupAction, ExecuteProcess, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, GroupAction, ExecuteProcess, SetEnvironmentVariable, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, EnvironmentVariable
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.descriptions import ParameterValue
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 import os
 
@@ -14,9 +15,8 @@ def generate_launch_description():
     pkg_sim = FindPackageShare('robot4ws_simulations')
     pkg_plugins = FindPackageShare('robot4ws_gazebo_plugins')
 
-    # Get package directory for bridge config
+    # Get package directory
     pkg_share_dir = get_package_share_directory('robot4ws_description')
-    bridge_config_file = os.path.join(get_package_share_directory('robot4ws_simulations'), 'config', 'bridge_config.yaml')
 
     # Set Gazebo environment variables
     gz_resource_path = SetEnvironmentVariable(
@@ -40,12 +40,13 @@ def generate_launch_description():
         DeclareLaunchArgument('use_rviz', default_value='false'),
         DeclareLaunchArgument('include_plugins', default_value='true'),
         DeclareLaunchArgument('start_gazebo', default_value='true', description='Start Gazebo simulator'),
+        DeclareLaunchArgument('world_name', default_value='empty', description='Gazebo world name'),
         DeclareLaunchArgument('pos_x', default_value='0.0'),
         DeclareLaunchArgument('pos_y', default_value='0.0'),
-        DeclareLaunchArgument('pos_z', default_value='0.17'),
-        DeclareLaunchArgument('pos_roll', default_value='0.0'),
-        DeclareLaunchArgument('pos_pitch', default_value='0.0'),
-        DeclareLaunchArgument('pos_yaw', default_value='0.0'),
+        DeclareLaunchArgument('pos_z', default_value='1.5'),
+        DeclareLaunchArgument('pos_roll', default_value='-0.07'),
+        DeclareLaunchArgument('pos_pitch', default_value='-0.09'),
+        DeclareLaunchArgument('pos_yaw', default_value='2.74'),
         DeclareLaunchArgument('show_imu', default_value='false'),
         DeclareLaunchArgument('show_cameras', default_value='false'),
         DeclareLaunchArgument('show_laser_scan', default_value='false'),
@@ -54,7 +55,10 @@ def generate_launch_description():
         DeclareLaunchArgument('include_terrain_slip_plugin', default_value='false'),
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
+        DeclareLaunchArgument('load_sensors_plugins', default_value='true'),
+
     ]
+
 
     # Robot description
     robot_description_content = ParameterValue(
@@ -68,7 +72,8 @@ def generate_launch_description():
             ' rocker_differential:=', LaunchConfiguration('rocker_differential'),
             ' include_terrain_slip_plugin:=', LaunchConfiguration('include_terrain_slip_plugin'),
             ' add_velodyneHDL32E:=', LaunchConfiguration('add_velodyneHDL32E'),
-            ' lidar_organize_cloud:=', LaunchConfiguration('lidar_organize_cloud')
+            ' lidar_organize_cloud:=', LaunchConfiguration('lidar_organize_cloud'),
+            ' load_sensors_plugins:=', LaunchConfiguration('load_sensors_plugins')
         ]),
         value_type=str
     )
@@ -137,16 +142,16 @@ def generate_launch_description():
         parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
-    # ROS-Gazebo bridge
-    bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        parameters=[
-            {'use_sim_time': LaunchConfiguration('use_sim_time')},
-            {'config_file': bridge_config_file}
-        ],
-        output='screen'
-    )
+    # # ROS-Gazebo bridge (dynamic)
+    # bridge = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource([
+    #         PathJoinSubstitution([pkg_sim, 'launch', 'archimede_bridges.launch.py'])
+    #     ]),
+    #     launch_arguments={
+    #         'world_name': LaunchConfiguration('world_name'),
+    #         'model_name': 'Archimede'
+    #     }.items()
+    # )
 
     # RViz
     rviz = GroupAction(
@@ -170,6 +175,6 @@ def generate_launch_description():
         gz_sim,
         spawn_entity,
         static_tf,
-        bridge,
+        #bridge,
         rviz
     ])
