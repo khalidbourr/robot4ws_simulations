@@ -41,8 +41,8 @@ def generate_launch_description():
         DeclareLaunchArgument('include_plugins', default_value='true'),
         DeclareLaunchArgument('start_gazebo', default_value='true', description='Start Gazebo simulator'),
         DeclareLaunchArgument('world_name', default_value='empty', description='Gazebo world name'),
-        DeclareLaunchArgument('pos_x', default_value='0.0'),
-        DeclareLaunchArgument('pos_y', default_value='0.0'),
+        DeclareLaunchArgument('pos_x', default_value='-20.0'),
+        DeclareLaunchArgument('pos_y', default_value='15.0'),
         DeclareLaunchArgument('pos_z', default_value='1.5'),
         DeclareLaunchArgument('pos_roll', default_value='-0.07'),
         DeclareLaunchArgument('pos_pitch', default_value='-0.09'),
@@ -89,17 +89,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Joint state publisher
-    # joint_state_publisher = Node(
-    #     package='joint_state_publisher',
-    #     executable='joint_state_publisher',
-    #     parameters=[{
-    #         'robot_description': robot_description_content,
-    #         'use_sim_time': LaunchConfiguration('use_sim_time')
-    #     }],
-    #     output='screen'
-    # )
-
     # Gazebo - empty world (conditional)
     gz_sim = GroupAction(
         condition=IfCondition(LaunchConfiguration('start_gazebo')),
@@ -142,17 +131,6 @@ def generate_launch_description():
         parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
-    # # ROS-Gazebo bridge (dynamic)
-    # bridge = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([
-    #         PathJoinSubstitution([pkg_sim, 'launch', 'archimede_bridges.launch.py'])
-    #     ]),
-    #     launch_arguments={
-    #         'world_name': LaunchConfiguration('world_name'),
-    #         'model_name': 'Archimede'
-    #     }.items()
-    # )
-
     # RViz
     rviz = GroupAction(
         condition=IfCondition(LaunchConfiguration('use_rviz')),
@@ -171,10 +149,8 @@ def generate_launch_description():
         gz_plugin_path,
     ] + args + [
         robot_state_publisher,
-        # joint_state_publisher,
         gz_sim,
         spawn_entity,
         static_tf,
-        #bridge,
         rviz
     ])
