@@ -56,6 +56,8 @@ def generate_launch_description():
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
         DeclareLaunchArgument('load_sensors_plugins', default_value='true'),
+        DeclareLaunchArgument('use_navigation', default_value='false',
+                              description='Start robot4ws_navigation (simple_nav_stuck)'),
 
     ]
 
@@ -144,6 +146,21 @@ def generate_launch_description():
         ]
     )
 
+    # Navigation (optional): remap bare /odom to the namespaced topic the rover publishes
+    navigation = GroupAction(
+        condition=IfCondition(LaunchConfiguration('use_navigation')),
+        actions=[
+            Node(
+                package='robot4ws_navigation',
+                executable='simple_nav_stuck',
+                name='simple_nav_stuck',
+                namespace='Archimede',
+                output='screen',
+                parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
+            )
+        ]
+    )
+
     return LaunchDescription([
         gz_resource_path,
         gz_plugin_path,
@@ -152,5 +169,6 @@ def generate_launch_description():
         gz_sim,
         spawn_entity,
         static_tf,
-        rviz
+        rviz,
+        navigation
     ])
