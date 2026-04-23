@@ -153,7 +153,6 @@ def generate_launch_description():
             Node(
                 package='robot4ws_navigation',
                 executable='simple_nav_stuck',
-                name='simple_nav_stuck',
                 namespace='Archimede',
                 output='screen',
                 parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],

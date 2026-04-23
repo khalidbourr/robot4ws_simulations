@@ -24,6 +24,12 @@ def generate_launch_description():
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
         DeclareLaunchArgument('load_sensors_plugins', default_value='true'),
         DeclareLaunchArgument('use_navigation', default_value='false'),
+        DeclareLaunchArgument('pos_x', default_value='22.0'),
+        DeclareLaunchArgument('pos_y', default_value='49.0'),
+        DeclareLaunchArgument('pos_z', default_value='0.5'),
+        DeclareLaunchArgument('pos_roll', default_value='-0.07'),
+        DeclareLaunchArgument('pos_pitch', default_value='-0.09'),
+        DeclareLaunchArgument('pos_yaw', default_value='2.74'),
     ]
 
     # Include basic gazebo launch
@@ -40,7 +46,13 @@ def generate_launch_description():
         'add_velodyneHDL32E': LaunchConfiguration('add_velodyneHDL32E'),
         'lidar_organize_cloud': LaunchConfiguration('lidar_organize_cloud'),
         'load_sensors_plugins': LaunchConfiguration('load_sensors_plugins'),
-        'use_navigation': LaunchConfiguration('use_navigation')
+        'use_navigation': LaunchConfiguration('use_navigation'),
+        'pos_x': LaunchConfiguration('pos_x'),
+        'pos_y': LaunchConfiguration('pos_y'),
+        'pos_z': LaunchConfiguration('pos_z'),
+        'pos_roll': LaunchConfiguration('pos_roll'),
+        'pos_pitch': LaunchConfiguration('pos_pitch'),
+        'pos_yaw': LaunchConfiguration('pos_yaw'),
         }.items()
     )
 
